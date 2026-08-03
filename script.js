@@ -72,6 +72,7 @@ const formatCleaningDate = new Intl.DateTimeFormat("en-GB", {
 let bookingSubmissionPending = false;
 let bookingConfirmationShown = false;
 let bookingResponseTimeout = null;
+let bookingSlowNoticeTimeout = null;
 
 if (year) {
   year.textContent = new Date().getFullYear();
@@ -102,6 +103,10 @@ const showBookingConfirmation = (reference) => {
   if (bookingResponseTimeout) {
     window.clearTimeout(bookingResponseTimeout);
     bookingResponseTimeout = null;
+  }
+  if (bookingSlowNoticeTimeout) {
+    window.clearTimeout(bookingSlowNoticeTimeout);
+    bookingSlowNoticeTimeout = null;
   }
 
   const confirmationTitle = quoteStatus.querySelector("strong");
@@ -699,6 +704,10 @@ window.addEventListener("message", (event) => {
     window.clearTimeout(bookingResponseTimeout);
     bookingResponseTimeout = null;
   }
+  if (bookingSlowNoticeTimeout) {
+    window.clearTimeout(bookingSlowNoticeTimeout);
+    bookingSlowNoticeTimeout = null;
+  }
   if (bookCleanButton) {
     bookCleanButton.disabled = false;
     bookCleanButton.textContent = "Confirm booking";
@@ -732,6 +741,20 @@ if (quoteForm) {
     if (bookingResponseTimeout) {
       window.clearTimeout(bookingResponseTimeout);
     }
+    if (bookingSlowNoticeTimeout) {
+      window.clearTimeout(bookingSlowNoticeTimeout);
+    }
+    bookingSlowNoticeTimeout = window.setTimeout(() => {
+      if (!bookingSubmissionPending || bookingConfirmationShown) {
+        return;
+      }
+      if (bookCleanButton) {
+        bookCleanButton.textContent = "Still confirming...";
+      }
+      if (formStatus) {
+        formStatus.textContent = "Google is taking longer than usual. Please keep this page open and do not submit the booking again.";
+      }
+    }, 15000);
     bookingResponseTimeout = window.setTimeout(() => {
       if (!bookingSubmissionPending || bookingConfirmationShown) {
         return;
@@ -739,14 +762,15 @@ if (quoteForm) {
 
       bookingSubmissionPending = false;
       bookingResponseTimeout = null;
+      bookingSlowNoticeTimeout = null;
       if (bookCleanButton) {
         bookCleanButton.disabled = false;
         bookCleanButton.textContent = "Confirm booking";
       }
       if (formStatus) {
-        formStatus.textContent = "The booking service did not respond. Please try again or contact us directly.";
+        formStatus.textContent = "We could not verify the booking after four minutes. Check your email before trying again, or contact us directly.";
       }
-    }, 30000);
+    }, 240000);
 
     if (bookCleanButton) {
       bookCleanButton.disabled = true;
