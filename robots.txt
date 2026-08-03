@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://bdwindowservices.github.io/sitemap.xml
