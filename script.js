@@ -36,6 +36,7 @@ const bookingDateOptions = document.querySelectorAll("[data-booking-option]");
 const bookCleanButton = document.querySelector("#book-clean-button");
 const formStatus = document.querySelector("#form-status");
 const bookingResponse = document.querySelector("#booking-response");
+const submissionIdInput = document.querySelector("#submission-id");
 const mobileQuoteDefaultHref = mobileQuoteAmount ? mobileQuoteAmount.getAttribute("href") : "";
 const mobileQuoteDefaultText = mobileQuoteAmount ? mobileQuoteAmount.textContent : "";
 const desktopEstimateDefaultMain = desktopEstimateMain ? desktopEstimateMain.textContent : "";
@@ -76,6 +77,17 @@ let bookingSlowNoticeTimeout = null;
 
 if (year) {
   year.textContent = new Date().getFullYear();
+}
+
+const createSubmissionId = () => {
+  if (window.crypto && typeof window.crypto.randomUUID === "function") {
+    return window.crypto.randomUUID();
+  }
+  return `bd-${Date.now()}-${Math.random().toString(36).slice(2, 12)}`;
+};
+
+if (submissionIdInput && !submissionIdInput.value) {
+  submissionIdInput.value = createSubmissionId();
 }
 
 const positionBookingConfirmation = () => {
