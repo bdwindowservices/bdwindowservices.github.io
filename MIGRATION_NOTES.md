@@ -1,15 +1,17 @@
-# Short website address migration
+# Website migration record
 
-This repository contains the B D Window Cleaning Services website copied from
-`bdwindowservices-cloud/bd-window-cleaning` and prepared for the shorter address:
+The B D Window Cleaning Services website was migrated from
+`bdwindowservices-cloud/bd-window-cleaning` to the shorter live address:
 
-`https://bdwindowservices.github.io/`
+https://bdwindowservices.github.io/
 
-Before the new address replaces the current website:
+The previous homepage now redirects to the live website. Its Privacy Notice
+and Customer Booking Terms should also continue to redirect to the matching
+pages on the live site.
 
-1. Review and merge this migration pull request.
-2. Publish GitHub Pages from `main` and the repository root.
-3. Test the calculator, mobile layout, booking form, booking emails and spreadsheet.
-4. Update the existing Google Apps Script `Code.gs` from this repository and deploy
-   a new version of the existing web app.
-5. Only after those checks, replace the old website with a redirect.
+GitHub Pages publishes from the `main` branch and repository root.
+
+The Google Apps Script booking service is deployed separately from GitHub.
+Whenever `google-apps-script/Code.gs` or
+`google-apps-script/EmailTemplate.html` changes, the existing Apps Script
+project must be updated and a new web-app version deployed.

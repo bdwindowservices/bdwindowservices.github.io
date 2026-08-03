@@ -71,6 +71,7 @@ const formatCleaningDate = new Intl.DateTimeFormat("en-GB", {
 });
 let bookingSubmissionPending = false;
 let bookingConfirmationShown = false;
+let bookingResponseTimeout = null;
 
 if (year) {
   year.textContent = new Date().getFullYear();
@@ -98,10 +99,14 @@ const showBookingConfirmation = (reference) => {
 
   bookingConfirmationShown = true;
   bookingSubmissionPending = false;
+  if (bookingResponseTimeout) {
+    window.clearTimeout(bookingResponseTimeout);
+    bookingResponseTimeout = null;
+  }
 
   const confirmationTitle = quoteStatus.querySelector("strong");
   if (confirmationTitle) {
-    confirmationTitle.textContent = "Thank you, your booking request has been sent.";
+    confirmationTitle.textContent = "Thank you, your booking is confirmed.";
   }
   if (quoteReference) {
     quoteReference.textContent = reference
@@ -690,6 +695,10 @@ window.addEventListener("message", (event) => {
   }
 
   bookingSubmissionPending = false;
+  if (bookingResponseTimeout) {
+    window.clearTimeout(bookingResponseTimeout);
+    bookingResponseTimeout = null;
+  }
   if (bookCleanButton) {
     bookCleanButton.disabled = false;
     bookCleanButton.textContent = "Confirm booking";
@@ -705,11 +714,24 @@ if (bookingResponse) {
       return;
     }
 
-    window.setTimeout(() => {
-      if (bookingSubmissionPending && !bookingConfirmationShown) {
-        showBookingConfirmation("");
+    if (bookingResponseTimeout) {
+      window.clearTimeout(bookingResponseTimeout);
+    }
+    bookingResponseTimeout = window.setTimeout(() => {
+      if (!bookingSubmissionPending || bookingConfirmationShown) {
+        return;
       }
-    }, 500);
+
+      bookingSubmissionPending = false;
+      bookingResponseTimeout = null;
+      if (bookCleanButton) {
+        bookCleanButton.disabled = false;
+        bookCleanButton.textContent = "Confirm booking";
+      }
+      if (formStatus) {
+        formStatus.textContent = "We could not verify that your booking was completed. Please try again or contact us directly.";
+      }
+    }, 4000);
   });
 }
 
@@ -734,6 +756,10 @@ if (quoteForm) {
     }
 
     bookingSubmissionPending = true;
+    if (bookingResponseTimeout) {
+      window.clearTimeout(bookingResponseTimeout);
+      bookingResponseTimeout = null;
+    }
 
     if (bookCleanButton) {
       bookCleanButton.disabled = true;
