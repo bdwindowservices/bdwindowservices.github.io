@@ -230,6 +230,72 @@ h3 { margin-bottom: 8px; font-size: 1.2rem; line-height: 1.2; }
 .services-overview .section-heading { margin-bottom: 0; }
 .services > .services-overview,
 #about > .services-overview { max-width: 1460px; }
+
+.completed-clean {
+  background: var(--mist);
+}
+.completed-clean-inner {
+  display: grid;
+  grid-template-columns: minmax(0, 1.15fr) minmax(280px, 0.85fr);
+  gap: clamp(28px, 6vw, 76px);
+  align-items: center;
+  max-width: 1280px;
+  margin: 0 auto;
+}
+.completed-clean-figure {
+  display: grid;
+  gap: 12px;
+  margin: 0;
+}
+.completed-clean-placeholder {
+  display: grid;
+  place-items: center;
+  align-content: center;
+  gap: 14px;
+  aspect-ratio: 4 / 3;
+  padding: 28px;
+  border: 1px dashed #80aaa4;
+  border-radius: 8px;
+  color: var(--accent-dark);
+  background: var(--sky);
+  text-align: center;
+}
+.completed-clean-placeholder strong {
+  max-width: 26ch;
+  font-size: clamp(1.05rem, 2.4vw, 1.35rem);
+  line-height: 1.35;
+}
+.completed-clean-mark {
+  display: grid;
+  place-items: center;
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  color: var(--white);
+  background: var(--accent-dark);
+  font-size: 1.15rem;
+  font-weight: 900;
+}
+.completed-clean-figure figcaption {
+  display: grid;
+  gap: 2px;
+  color: var(--muted);
+  font-size: 0.92rem;
+}
+.completed-clean-figure figcaption strong {
+  color: var(--ink);
+  font-size: 0.98rem;
+}
+.completed-clean-copy {
+  max-width: 560px;
+}
+.completed-clean-copy h2 {
+  margin-top: 0;
+}
+.completed-clean-copy p:last-child {
+  margin-bottom: 0;
+  color: var(--muted);
+}
 .clean-window-placeholder {
   display: grid;
   gap: 10px;
@@ -857,6 +923,8 @@ footer a { color: var(--white); font-weight: 800; text-decoration: none; }
   .strip, .two-column, .quote-section, .area, .contact { grid-template-columns: 1fr; }
   .services-overview { grid-template-columns: 1fr; }
   .clean-window-placeholder { max-width: 520px; }
+  .completed-clean-inner { grid-template-columns: 1fr; }
+  .completed-clean-figure { max-width: 640px; }
   .quote-intro { position: static; }
   .quote-builder-layout { grid-template-columns: 1fr; }
   .window-set-preview { order: -1; }
