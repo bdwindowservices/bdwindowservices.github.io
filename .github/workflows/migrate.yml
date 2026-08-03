@@ -1,0 +1,146 @@
+name: Prepare short URL migration
+
+on:
+  push:
+    branches:
+      - agent/migrate-short-url
+
+permissions:
+  contents: write
+
+jobs:
+  migrate:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out migration branch
+        uses: actions/checkout@v4
+        with:
+          ref: agent/migrate-short-url
+          fetch-depth: 0
+
+      - name: Copy the current website and update its address
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          source_dir="$(mktemp -d)/source"
+          git clone --depth 1 --branch main \
+            https://github.com/bdwindowservices-cloud/bd-window-cleaning.git \
+            "$source_dir"
+
+          find . -mindepth 1 -maxdepth 1 ! -name .git -exec rm -rf {} +
+          rsync -a --exclude='.git/' --exclude='.github/' "$source_dir/" ./
+
+          python3 - <<'PY'
+          from pathlib import Path
+
+          replacements = {
+              "https://bdwindowservices-cloud.github.io/bd-window-cleaning/": "https://bdwindowservices.github.io/",
+              "https://bdwindowservices-cloud.github.io/bd-window-cleaning": "https://bdwindowservices.github.io",
+              "https://github.com/bdwindowservices-cloud/bd-window-cleaning": "https://github.com/bdwindowservices/bdwindowservices.github.io",
+              "/bd-window-cleaning/": "/",
+          }
+
+          text_suffixes = {
+              ".css", ".gs", ".html", ".js", ".json", ".md", ".svg",
+              ".txt", ".xml", ".yaml", ".yml"
+          }
+
+          for path in Path(".").rglob("*"):
+              if not path.is_file() or path.suffix.lower() not in text_suffixes:
+                  continue
+              try:
+                  original = path.read_text(encoding="utf-8")
+              except UnicodeDecodeError:
+                  continue
+              updated = original
+              for old, new in replacements.items():
+                  updated = updated.replace(old, new)
+              if updated != original:
+                  path.write_text(updated, encoding="utf-8")
+          PY
+
+          cat > MIGRATION_NOTES.md <<'EOF'
+          # Short website address migration
+
+          This repository contains the B D Window Cleaning Services website copied from
+          `bdwindowservices-cloud/bd-window-cleaning` and prepared for the shorter address:
+
+          `https://bdwindowservices.github.io/`
+
+          Before the new address replaces the current website:
+
+          1. Review and merge this migration pull request.
+          2. Publish GitHub Pages from `main` and the repository root.
+          3. Test the calculator, mobile layout, booking form, booking emails and spreadsheet.
+          4. Update the existing Google Apps Script `Code.gs` from this repository and deploy
+             a new version of the existing web app.
+          5. Only after those checks, replace the old website with a redirect.
+          EOF
+
+          touch .nojekyll
+
+      - name: Validate copied website
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -f index.html
+          test -f styles.css
+          test -f script.js
+          test -d assets
+          test -f google-apps-script/Code.gs
+
+          if grep -R -n --exclude-dir=.git \
+            'bdwindowservices-cloud.github.io/bd-window-cleaning' .; then
+            echo 'The old website address is still present.' >&2
+            exit 1
+          fi
+
+          for file in *.js; do
+            node --check "$file"
+          done
+
+          python3 - <<'PY'
+          from html.parser import HTMLParser
+          from pathlib import Path
+          from urllib.parse import urlparse
+
+          class LocalReferenceParser(HTMLParser):
+              def __init__(self):
+                  super().__init__()
+                  self.references = []
+
+              def handle_starttag(self, tag, attrs):
+                  for name, value in attrs:
+                      if name in {"href", "src"} and value:
+                          self.references.append(value)
+
+          parser = LocalReferenceParser()
+          parser.feed(Path("index.html").read_text(encoding="utf-8"))
+
+          missing = []
+          for value in parser.references:
+              parsed = urlparse(value)
+              if parsed.scheme or value.startswith(("#", "mailto:", "tel:", "javascript:")):
+                  continue
+              local_path = parsed.path.lstrip("/")
+              if not local_path:
+                  continue
+              if not Path(local_path).exists():
+                  missing.append(value)
+
+          if missing:
+              raise SystemExit("Missing local files referenced by index.html: " + ", ".join(missing))
+          PY
+
+      - name: Commit migration
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git commit -m "Migrate website to short GitHub Pages address"
+          git push origin HEAD:agent/migrate-short-url
