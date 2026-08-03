@@ -3,6 +3,7 @@ const CONFIG = Object.freeze({
   businessEmail: "bdwindowservices@gmail.com",
   businessPhone: "07598 629684",
   websiteUrl: "https://bdwindowservices.github.io/",
+  websiteOrigin: "https://bdwindowservices.github.io",
   websiteSource: "bdwindowservices.github.io",
   sheetName: "Bookings",
   timezone: "Europe/London"
@@ -337,7 +338,8 @@ function errorPage_() {
     "Return to contact details"
   );
   const message = bookingMessageScript_("error", "");
-  return HtmlService.createHtmlOutput(page.replace("</head>", message + "</head>"));
+  return HtmlService.createHtmlOutput(page.replace("</head>", message + "</head>"))
+    .setXFrameOptionsMode(HtmlService.XFrameOptionsMode.ALLOWALL);
 }
 
 function messagePage_(status, reference) {
@@ -347,7 +349,7 @@ function messagePage_(status, reference) {
     "<title>Booking response</title>" +
     bookingMessageScript_(status, reference) +
     "</head><body></body></html>"
-  );
+  ).setXFrameOptionsMode(HtmlService.XFrameOptionsMode.ALLOWALL);
 }
 
 function bookingMessageScript_(status, reference) {
@@ -356,7 +358,8 @@ function bookingMessageScript_(status, reference) {
     status: status,
     reference: reference
   }).replace(/</g, "\\u003c");
-  return "<script>window.top.postMessage(" + message + ", \"*\");<\/script>";
+  return "<script>window.top.postMessage(" + message + ", " +
+    JSON.stringify(CONFIG.websiteOrigin) + ");<\/script>";
 }
 
 function responsePage_(title, message, destination, linkText) {
