@@ -1,0 +1,499 @@
+<!doctype html>
+<html lang="en-GB">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>B D Window Cleaning Services | Southampton Window Cleaning</title>
+    <meta name="description" content="Simple, reliable window cleaning in Southampton. Request a price estimate for regular or one-off pure water window cleaning.">
+    <link rel="preload" href="assets/window-cleaning-hero.svg" as="image">
+    <link rel="stylesheet" href="styles.css?v=20260803-1">
+    <style>
+      .brand { gap: 20px; }
+      .brand-name { max-width: 320px; }
+      .desktop-action-bar { display: none; }
+      .quote-section {
+        grid-template-columns: minmax(0, 1fr);
+        gap: 0;
+      }
+      .quote-intro {
+        position: static;
+      }
+      .quote-form {
+        justify-self: start;
+        width: min(1120px, calc(100% - clamp(24px, 4vw, 72px)));
+        margin-left: clamp(24px, 4vw, 72px);
+      }
+      #pricing-guide,
+      #window-set-picture {
+        scroll-margin-top: 96px;
+      }
+      .testimonials h2 {
+        margin-bottom: 24px;
+      }
+      .testimonial-list {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 18px;
+      }
+      .testimonial-card {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        min-height: 220px;
+        padding: 24px;
+        border: 1px solid #dbe6e2;
+        border-radius: 8px;
+        background: #ffffff;
+        box-shadow: 0 12px 28px rgba(21, 42, 36, 0.08);
+      }
+      .testimonial-card blockquote {
+        margin: 0 0 22px;
+        color: #33423e;
+        font-size: 1rem;
+        line-height: 1.65;
+      }
+      .testimonial-card cite {
+        color: #07575b;
+        font-style: normal;
+        font-weight: 850;
+      }
+      .front-only-option {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 12px 14px;
+        border: 1px solid #dbe6e2;
+        border-radius: 8px;
+        background: #ffffff;
+        font-weight: 850;
+      }
+      .front-only-option:has(input:checked) {
+        border-color: #07575b;
+        background: #e8f3ef;
+      }
+      .front-only-option input {
+        width: 18px;
+        height: 18px;
+        min-height: 0;
+        padding: 0;
+        accent-color: #07575b;
+      }
+      .counter-card.is-disabled { opacity: 0.58; }
+      .window-set-preview {
+        background: linear-gradient(180deg, #dcecf2 0%, #eef8f7 68%, #d7ead6 100%);
+      }
+      .preview-house {
+        width: min(100%, 360px);
+        min-height: 300px;
+        overflow: hidden;
+        border-radius: 8px;
+        background: #dcecf2;
+        box-shadow: 0 18px 28px rgba(21, 42, 36, 0.16);
+      }
+      .house-preview-photo {
+        display: block;
+        width: 100%;
+        min-height: 300px;
+        aspect-ratio: 4 / 3;
+        object-fit: cover;
+      }
+      .house-preview-bespoke {
+        display: grid;
+        place-items: center;
+        min-height: 300px;
+        color: #07575b;
+        background: linear-gradient(135deg, #eef8f7, #dcecf2);
+        font-size: clamp(3rem, 8vw, 5.4rem);
+        font-weight: 900;
+      }
+      .preview-roof {
+        position: relative;
+        width: 92%;
+        height: 58px;
+        margin: 0 auto -1px;
+        background:
+          repeating-linear-gradient(0deg, rgba(255,255,255,0.12) 0 2px, transparent 2px 8px),
+          linear-gradient(135deg, #8c7662, #4e4138);
+        clip-path: polygon(8% 100%, 18% 0, 82% 0, 96% 100%);
+        box-shadow: 0 10px 18px rgba(21, 42, 36, 0.18);
+      }
+      .preview-roof::before {
+        position: absolute;
+        top: 10px;
+        left: 16%;
+        width: 28px;
+        height: 48px;
+        background: linear-gradient(90deg, #8b4c34, #5e2f22);
+        box-shadow: inset 0 0 0 2px rgba(255,255,255,0.14);
+        content: "";
+      }
+      .preview-wall {
+        min-height: 230px;
+        padding: 24px 22px 42px;
+        border: 0;
+        border-radius: 4px 4px 8px 8px;
+        background:
+          linear-gradient(90deg, rgba(255,255,255,0.12) 1px, transparent 1px) 0 0 / 38px 18px,
+          linear-gradient(rgba(255,255,255,0.16) 1px, transparent 1px) 0 0 / 100% 18px,
+          linear-gradient(135deg, #a85435, #7d3828 58%, #9f4e32);
+        box-shadow: 0 18px 28px rgba(21, 42, 36, 0.16);
+      }
+      .preview-wall::after {
+        position: absolute;
+        right: 0;
+        bottom: 0;
+        left: 0;
+        height: 24px;
+        background: linear-gradient(180deg, rgba(51, 106, 49, 0.2), rgba(51, 106, 49, 0.42));
+        content: "";
+      }
+      .preview-grid {
+        width: min(100%, 270px);
+        gap: 14px;
+        align-items: start;
+      }
+      .preview-grid[data-window-count="2"] { grid-template-columns: repeat(2, minmax(0, 1fr)); max-width: 190px; }
+      .preview-grid[data-window-count="3"] { grid-template-columns: repeat(2, minmax(0, 1fr)); max-width: 230px; }
+      .preview-grid[data-window-count="5"],
+      .preview-grid[data-window-count="7"] { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+      .preview-window-set {
+        aspect-ratio: 1 / 1.02;
+        border: 5px solid #f7fbfb;
+        border-radius: 2px;
+        background:
+          linear-gradient(120deg, rgba(255,255,255,0.6) 0 18%, transparent 18% 100%),
+          linear-gradient(135deg, #9dbbc3, #f6fbfb 58%, #b7d7df);
+        box-shadow: inset 0 0 0 1px rgba(7, 87, 91, 0.18), 0 7px 13px rgba(21, 42, 36, 0.22);
+      }
+      .preview-window-set:nth-child(3) { grid-column: 1 / 2; }
+      .preview-window-set::before { width: 3px; background: rgba(247,251,251,0.88); }
+      .preview-window-set::after { height: 3px; background: rgba(247,251,251,0.88); }
+      .preview-door { display: none; }
+      @media (max-width: 900px) {
+        #pricing-guide,
+        #window-set-picture {
+          scroll-margin-top: 132px;
+        }
+        .testimonial-list {
+          grid-template-columns: 1fr;
+        }
+        .testimonial-card {
+          min-height: 0;
+        }
+      }
+      @media (min-width: 641px) {
+        body { padding-bottom: 96px; }
+        .desktop-action-bar {
+          position: fixed;
+          left: 50%;
+          bottom: 18px;
+          z-index: 40;
+          display: block;
+          width: min(680px, calc(100% - 48px));
+          transform: translateX(-50%);
+        }
+        .desktop-action-bar a {
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          gap: 20px;
+          min-height: 70px;
+          padding: 14px 16px 14px 20px;
+          color: #172521;
+          text-decoration: none;
+          background: rgba(255, 255, 255, 0.96);
+          border: 1px solid rgba(219, 230, 226, 0.95);
+          border-radius: 8px;
+          box-shadow: 0 18px 48px rgba(21, 42, 36, 0.18);
+          backdrop-filter: blur(14px);
+        }
+        .desktop-action-copy { display: grid; gap: 2px; }
+        .desktop-action-copy strong { font-size: 1.08rem; line-height: 1.2; }
+        .desktop-action-copy small { color: #5d6c67; font-size: 0.84rem; line-height: 1.25; }
+        .desktop-action-copy small:empty { display: none; }
+        .desktop-action-cta {
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
+          min-width: 126px;
+          min-height: 42px;
+          padding: 10px 14px;
+          color: #ffffff;
+          font-weight: 850;
+          background: #0f8b8d;
+          border-radius: 8px;
+        }
+        .desktop-action-bar.is-progress .desktop-action-cta { background: #086367; }
+        .desktop-action-bar.is-ready .desktop-action-cta { background: #086367; }
+        .desktop-action-bar.is-ready #desktop-estimate-main {
+          font-size: 0.95rem !important;
+          line-height: 1.25;
+        }
+        .quote-total #quote-total-price {
+          font-size: 1.15rem !important;
+          line-height: 1.25;
+        }
+      }
+      @media (max-width: 640px) {
+        .brand { gap: 14px; }
+        .quote-form {
+          width: 100%;
+          margin-left: 0;
+        }
+        .preview-house, .house-preview-photo, .house-preview-bespoke { min-height: 264px; }
+        .preview-wall { min-height: 204px; padding: 20px 16px 36px; }
+        .preview-grid { width: min(100%, 220px); gap: 10px; }
+      }
+    </style>
+  </head>
+  <body>
+    <header class="site-header" aria-label="Main navigation">
+      <a class="brand" href="#top" aria-label="B D Window Cleaning Services home">
+        <img class="brand-logo" src="assets/bd-header-logo.svg" alt="" width="144" height="97" aria-hidden="true">
+        <span class="brand-name">B D Window Cleaning Services</span>
+      </a>
+      <nav>
+        <a href="#services">Cleaning</a>
+        <a href="#quote">Prices</a>
+        <a href="#faq">FAQ</a>
+        <a href="#contact">Contact</a>
+      </nav>
+    </header>
+
+    <main id="top">
+      <section class="hero" aria-labelledby="hero-title">
+        <div class="hero-copy">
+          <h1 id="hero-title">Southampton Window cleaning made simple</h1>
+          <p class="hero-lede">Regular and one-off window cleaning for local homes. See a price estimate, and arrange a clean without the hassle.</p>
+          <div class="hero-actions">
+            <a class="button primary" href="#quote">See our prices</a>
+            <a class="button secondary" href="#contact">Contact us</a>
+          </div>
+          <p class="hero-note">Pure water cleaning for glass, frames and sills in SO15, SO16 &amp; SO40.</p>
+        </div>
+      </section>
+
+      <section class="section services" id="services" aria-labelledby="services-title">
+        <div class="services-overview">
+          <div class="section-heading">
+            <h2 id="services-title">Glass, frames and sills cleaned with pure water</h2>
+            <p>Our window cleaning process uses purified water to lift dirt from the glass, frames and sills. Because the water dries naturally without leaving mineral marks, there is no need for harsh detergents. We are fully insured and do not take any payment until the first clean is completed.</p>
+          </div>
+          <figure class="clean-window-placeholder">
+            <img class="clean-window-visual" src="assets/clean-window-example.webp" alt="Clean white-framed window on a red brick home" width="380" height="285" loading="lazy" style="display: block; width: 100%; height: auto; min-height: 0; border: 0; object-fit: cover;">
+          </figure>
+        </div>
+      </section>
+
+      <section class="section testimonials" id="testimonials" aria-labelledby="testimonials-title">
+        <h2 id="testimonials-title">Recommended by our customers</h2>
+        <div class="testimonial-list">
+          <article class="testimonial-card">
+            <blockquote>“Ben has always done a great job, let's me know ahead of time when he's coming and is super reliable, would highly recommend.”</blockquote>
+            <cite>Becky</cite>
+          </article>
+          <article class="testimonial-card">
+            <blockquote>“I can highly recommend Ben Drummond window cleaning, my windows and fascia have always been sparking after he's cleaned them, he's very professional.”</blockquote>
+            <cite>Karen</cite>
+          </article>
+          <article class="testimonial-card">
+            <blockquote>“Andras’s customer review will go here. Keep the wording natural and use the customer’s own words.”</blockquote>
+            <cite>Andras</cite>
+          </article>
+        </div>
+      </section>
+
+      <section class="section process" id="process" aria-labelledby="process-title">
+        <div class="section-heading">
+          <h2 id="process-title">Book your clean in 3 simple steps</h2>
+        </div>
+        <ol class="step-list">
+          <li><strong>See your estimate</strong><span>Choose the options that match your home and see an estimated price before sending anything.</span></li>
+          <li><strong>Provide your details</strong><span>Tell us how to contact you and where the clean is required.</span></li>
+          <li><strong>Book the next available slot</strong><span>See what dates are available and book your clean right away on a day suitable for you.</span></li>
+        </ol>
+      </section>
+
+      <section class="section quote-section" id="quote" aria-labelledby="quote-title">
+        <div class="quote-intro">
+          <div class="confirmation" id="quote-status" role="status" aria-live="polite" hidden tabindex="-1">
+            <strong>Thank you, your booking request has been sent.</strong>
+            <span id="quote-reference">A confirmation email is on its way. If it is not in your inbox, please check your spam folder.</span>
+          </div>
+        </div>
+        <form class="quote-form" id="quote-form" action="https://script.google.com/macros/s/AKfycbxsbWKVkEMQYI6GhKSu2SxJ0TRm7t1G6_tvhj0_EysYOAsKnbBO9SSZnRe-Nk5fztFd/exec" method="POST" target="booking-response">
+          <input type="hidden" name="Estimated quote" id="estimated-quote" value="">
+          <input type="hidden" name="Front window sets" id="front-window-sets-input" value="">
+          <input type="hidden" name="Back or side window sets" id="back-side-window-sets-input" value="">
+          <input type="hidden" name="Extras" id="extras-input" value="">
+          <input type="hidden" name="Front only clean" id="front-only-input" value="No">
+          <input type="text" name="_honey" tabindex="-1" autocomplete="off" style="display: none;">
+          <fieldset class="fixed-price-choice price-builder wide">
+            <legend>Tap for a price!</legend>
+            <div class="quote-builder-layout">
+              <div class="price-builder-panel">
+                <p class="price-builder-intro">Roughly how many window sets do you have? <a href="#pricing-guide">See pricing guide for help</a>. It does not need to be exact.</p>
+                <div class="quote-total" id="quote-total" hidden aria-live="polite">
+                  <span>Estimated price</span>
+                  <strong id="quote-total-price">£-</strong>
+                  <small id="quote-total-monthly">Add front window sets to see your estimate.</small>
+                </div>
+                <div class="counter-list" aria-label="Window set estimator">
+                  <div class="counter-card" data-counter-card="front">
+                    <div>
+                      <strong>Front window sets</strong>
+                      <span>Choose the closest range for the front of your home.</span>
+                    </div>
+                    <div class="counter-control">
+                      <button type="button" data-counter-action="decrease" data-counter-target="front" aria-label="Choose fewer front window sets">-</button>
+                      <output id="front-window-count" aria-live="polite">3 to 4</output>
+                      <button type="button" data-counter-action="increase" data-counter-target="front" aria-label="Choose more front window sets">+</button>
+                    </div>
+                  </div>
+                  <div class="counter-card" data-counter-card="back">
+                    <div>
+                      <strong>Back or side window sets</strong>
+                    </div>
+                    <div class="counter-control">
+                      <button type="button" data-counter-action="decrease" data-counter-target="back" aria-label="Choose fewer back or side window sets">-</button>
+                      <output id="back-window-count" aria-live="polite">0</output>
+                      <button type="button" data-counter-action="increase" data-counter-target="back" aria-label="Choose more back or side window sets">+</button>
+                    </div>
+                  </div>
+                </div>
+                <label class="front-only-option"><input id="front-only-clean" type="checkbox">Front Only Clean</label>
+                <div class="extra-choice" aria-label="Extras">
+                  <p><strong>Extras?</strong></p>
+                  <div class="addon-options">
+                    <button type="button" data-extra-button data-extra-value="Small Conservatory" data-extra-price="6">Small conservatory <span>+£6</span></button>
+                    <button type="button" data-extra-button data-extra-value="Large Conservatory" data-extra-price="10">Large conservatory <span>+£10</span></button>
+                  </div>
+                </div>
+              </div>
+              <div class="window-set-preview" id="window-set-picture" aria-live="polite">
+                <div class="preview-house" aria-hidden="true">
+                  <div class="preview-roof"></div>
+                  <div class="preview-wall">
+                    <div class="preview-grid" id="window-preview-grid"></div>
+                  </div>
+                </div>
+                <p id="window-preview-caption">Front example: 4 window sets.</p>
+              </div>
+            </div>
+          </fieldset>
+          <div class="form-actions wide" id="quote-next-step">
+            <button class="button primary" id="quote-next-button" type="button" disabled>Next step</button>
+            <p id="quote-next-hint">Add front window sets to continue.</p>
+          </div>
+          <div class="quote-details wide" id="quote-details" hidden>
+            <label>Name<input name="Name" type="text" autocomplete="name" placeholder="Your name" required></label>
+            <label>Email address<input name="Email address" type="email" autocomplete="email" placeholder="you@example.com" required></label>
+            <label>Address line 1<input name="Address line 1" type="text" autocomplete="address-line1" placeholder="House number and street" required></label>
+            <label>Address line 2<input name="Address line 2" type="text" autocomplete="address-line2" placeholder="Area or locality"></label>
+            <label>Postcode<input name="Postcode" type="text" autocomplete="postal-code" placeholder="e.g. SO15 3AB" required></label>
+            <label class="wide">Access notes <span class="optional">optional</span><textarea name="Access notes" rows="3" placeholder="Gates, parking, rear access, pets, awkward windows, or anything useful"></textarea></label>
+            <p class="privacy wide">Your details are only used to respond to your clean request.</p>
+            <div class="form-actions wide"><button class="button primary" id="booking-next-button" type="button">Choose cleaning date</button><p id="booking-next-hint">Step 3: choose your appointment date and time</p></div>
+          </div>
+          <fieldset class="booking-date-choice wide" id="booking-date-step" hidden aria-label="Choose your appointment date and time">
+            <label class="checkbox-option"><input type="radio" name="Cleaning date preference" data-booking-option data-booking-date-index="0" data-booking-slot="1 to 3 pm">Loading date, 1 to 3 pm</label>
+            <label class="checkbox-option"><input type="radio" name="Cleaning date preference" data-booking-option data-booking-date-index="0" data-booking-slot="3 to 5 pm">Loading date, 3 to 5 pm</label>
+            <label class="checkbox-option"><input type="radio" name="Cleaning date preference" data-booking-option data-booking-date-index="1" data-booking-slot="1 to 3 pm">Loading date, 1 to 3 pm</label>
+            <label class="checkbox-option"><input type="radio" name="Cleaning date preference" data-booking-option data-booking-date-index="1" data-booking-slot="3 to 5 pm">Loading date, 3 to 5 pm</label>
+            <label class="checkbox-option"><input type="radio" name="Cleaning date preference" data-booking-option data-booking-date-index="2" data-booking-slot="1 to 3 pm">Loading date, 1 to 3 pm</label>
+            <label class="checkbox-option"><input type="radio" name="Cleaning date preference" data-booking-option data-booking-date-index="2" data-booking-slot="3 to 5 pm">Loading date, 3 to 5 pm</label>
+            <label class="checkbox-option"><input type="radio" name="Cleaning date preference" data-booking-option data-booking-date-index="3" data-booking-slot="1 to 3 pm">Loading date, 1 to 3 pm</label>
+            <label class="checkbox-option"><input type="radio" name="Cleaning date preference" data-booking-option data-booking-date-index="3" data-booking-slot="3 to 5 pm">Loading date, 3 to 5 pm</label>
+            <label class="checkbox-option"><input type="radio" name="Cleaning date preference" value="Please contact me to arrange a different date" data-booking-option>Please contact me to arrange a different date.</label>
+            <div class="form-actions wide"><button class="button primary" id="book-clean-button" type="submit">Confirm booking</button><p id="form-status" role="status" aria-live="polite"></p></div>
+            <p class="privacy booking-reassurance wide">Your cleaner will check the estimate and confirm the price before beginning. There’s nothing to pay until your first clean has been completed.</p>
+          </fieldset>
+        </form>
+        <iframe id="booking-response" name="booking-response" title="Booking response" hidden></iframe>
+      </section>
+
+      <section class="section" id="about" aria-labelledby="about-title">
+        <div class="services-overview">
+          <div class="section-heading">
+            <h2 id="about-title">A small window cleaning service with a simple approach.</h2>
+            <p>B D Window Services is a small local business run by Ben Drummond currently based in the Southampton area. Ben first started window cleaning in 2020 while living in Devon, Ben has focused on providing a straightforward, dependable service and leaving every customer’s windows looking their best. B D Window Services is fully insured and uses professional equipment to provide safe window cleaning.</p>
+          </div>
+          <figure class="photo-placeholder">
+            <div class="photo-placeholder-box" aria-hidden="true">
+              <span>BD</span>
+            </div>
+            <figcaption>Photo of Ben coming soon</figcaption>
+          </figure>
+        </div>
+      </section>
+
+      <section class="section faq" id="faq" aria-labelledby="faq-title">
+        <div class="section-heading">
+          <p class="section-kicker">Questions</p>
+          <h2 id="faq-title">A few useful things to know</h2>
+        </div>
+        <div class="faq-list">
+          <article><h3>What is included?</h3><p>We clean the glass, frames and sills using pure water. If anything needs extra attention, add it to the quote notes.</p></article>
+          <article><h3>Do I need to be home?</h3><p>For the first clean you will need to be at home for us to confirm the estimate with you, afterwards if access is agreed ahead of time you will not need to be home while we clean.</p></article>
+          <article><h3>How do I pay?</h3><p>We only take payment after you are happy with your estimate and we have finished your first clean. We take card payments, BACS transfers and standing orders.</p></article>
+          <article><h3>What if the weather is bad?</h3><p>We work in light rain, as this does not affect the results of pure-water cleaning. In heavy or unsuitable weather, we’ll rearrange your clean.</p></article>
+        </div>
+      </section>
+
+      <section class="section faq" id="pricing-guide" aria-labelledby="pricing-guide-title">
+        <div class="section-heading">
+          <h2 id="pricing-guide-title">Pricing Guide</h2>
+        </div>
+        <div class="faq-list">
+          <article><h3>What counts as a window set? - <a href="#window-set-picture">See picture examples</a></h3><p>Look for the separate groups of windows on your home. Each group counts as one set, even when it contains several windows or panes.</p></article>
+          <article><h3>Can you only clean my front windows?</h3><p>If you only want your front windows cleaned just let us know how many sets of windows you have at the front and ignore the back and side windows.</p></article>
+          <article><h3>Is my conservatory small or large?</h3><p>Choose small for up to 6 large glass sections, or large for 7 or more. We clean the glass, frames and sills included in a conservatory clean. If you would like a roof plastic or glass cleaned please contact us for a separate quote <a href="#contact">here</a>.</p></article>
+          <article><h3>How should I count my porch?</h3><p>Count a porch as one window set.</p></article>
+          <article><h3>What about doors with glass?</h3><p>We will clean any regular front and back doors as included in the price and these do not need to be counted. Just count any French doors or patio doors as one window set.</p></article>
+          <article><h3>With a regular clean how long do I have to commit to?</h3><p>Regular cleaning requires a minimum of three monthly payments, covering two cleans. We will confirm the price at your first appointment before you decide. After 3 months you may cancel our services at any time. If you just require a one-off clean please select it on our price list when booking.</p></article>
+        </div>
+      </section>
+
+      <section class="section area" aria-labelledby="area-title">
+        <div><h2 id="area-title">Southampton and nearby areas.</h2></div>
+        <p>We work around the Southampton area. Coverage can depend on location, access and schedule, so please include your postcode or local area when requesting a quote. We cover postcodes SO15, SO16 &amp; SO40.</p>
+      </section>
+
+      <section class="section contact" id="contact" aria-labelledby="contact-title">
+        <div><p class="section-kicker">Contact</p><h2 id="contact-title">Ready to request a quote?</h2></div>
+        <address><strong>B D Window Cleaning Services</strong><span>Run by Ben Drummond</span><span>Southampton area</span><span>Mobile: <a href="tel:+447598629684">07598 629684</a></span><span>WhatsApp: <a href="https://wa.me/447598629684">Message us on WhatsApp</a></span><span>Email: <a href="mailto:bdwindowservices@gmail.com">bdwindowservices@gmail.com</a></span></address>
+      </section>
+    </main>
+
+    <div class="desktop-action-bar is-idle" aria-label="Estimate status">
+      <a id="desktop-estimate-action" href="#quote">
+        <span class="desktop-action-copy">
+          <strong id="desktop-estimate-main">See what your clean could cost</strong>
+          <small id="desktop-estimate-sub"></small>
+        </span>
+        <span class="desktop-action-cta" id="desktop-estimate-cta">See prices</span>
+      </a>
+    </div>
+
+    <div class="mobile-action-bar is-single-action" aria-label="Quick actions">
+      <a id="mobile-quote-amount" href="#quote">See prices</a>
+    </div>
+
+    <footer>
+      <p>&copy; <span id="year">2026</span> B D Window Cleaning Services. Window cleaning made simple in the Southampton area.</p>
+      <div class="footer-links">
+        <a href="privacy.html" target="_blank" rel="noopener noreferrer">Privacy Notice</a>
+        <a href="terms.html" target="_blank" rel="noopener noreferrer">Terms &amp; Conditions</a>
+        <a href="#top">Back to top</a>
+      </div>
+    </footer>
+    <script src="script.js?v=20260803-1"></script>
+    <script src="preview-house-images.js?v=20260729-2"></script>
+    <script src="preview-house-images-5-6.js?v=20260729-1"></script>
+    <script src="preview-house-images-7-8.js?v=20260730-1"></script>
+    <script src="preview-caption-overrides.js?v=20260802-10"></script>
+    <script src="preview-caption-lock.js?v=20260802-9"></script>
+    <script src="mobile-number.js?v=20260802-3"></script>
+    <script src="one-off-payment-hint.js?v=20260802-1"></script>
+  </body>
+</html>

@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="en-GB">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Booking confirmed</title>
+  </head>
+  <body style="margin:0;padding:0;background:#eef4f2;color:#172521;font-family:Arial,Helvetica,sans-serif;">
+    <div style="display:none;max-height:0;overflow:hidden;color:transparent;">
+      Your window cleaning booking details and arrival window.
+    </div>
+    <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="background:#eef4f2;">
+      <tr>
+        <td align="center" style="padding:24px 12px;">
+          <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="max-width:620px;background:#ffffff;border:1px solid #dbe6e2;border-radius:8px;overflow:hidden;">
+            <tr>
+              <td style="padding:24px 28px;background:#07575b;color:#ffffff;">
+                <table role="presentation" cellspacing="0" cellpadding="0" border="0">
+                  <tr>
+                    <td style="width:48px;height:48px;background:#ffffff;color:#07575b;text-align:center;font-size:19px;font-weight:800;border-radius:6px;">BD</td>
+                    <td style="padding-left:14px;font-size:19px;line-height:1.25;font-weight:700;">B D Window Cleaning Services</td>
+                  </tr>
+                </table>
+              </td>
+            </tr>
+            <tr>
+              <td style="padding:30px 28px 12px;">
+                <p style="margin:0 0 16px;font-size:17px;line-height:1.6;">Hi <?= booking.firstName ?>,</p>
+                <h1 style="margin:0 0 12px;color:#07575b;font-size:27px;line-height:1.25;letter-spacing:0;">Your booking is confirmed</h1>
+                <p style="margin:0;font-size:16px;line-height:1.65;">Thank you for booking with B D Window Cleaning Services. We look forward to cleaning your windows.</p>
+              </td>
+            </tr>
+            <tr>
+              <td style="padding:18px 28px;">
+                <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="background:#eef8f7;border-left:4px solid #0f8b8d;border-radius:4px;">
+                  <tr><td style="padding:20px 20px 8px;color:#07575b;font-size:18px;font-weight:700;">Your booking</td></tr>
+                  <tr><td style="padding:5px 20px;"><strong>Reference:</strong> <?= booking.reference ?></td></tr>
+                  <tr><td style="padding:5px 20px;"><strong>Date and arrival window:</strong><br><?= booking.appointment ?></td></tr>
+                  <tr><td style="padding:5px 20px;"><strong>Address:</strong><br><?= booking.address ?></td></tr>
+                  <tr><td style="padding:5px 20px;"><strong>Estimated price:</strong><br><?= booking.estimate ?></td></tr>
+                  <tr><td style="padding:5px 20px;"><strong>Front window sets:</strong> <?= booking.frontSets ?></td></tr>
+                  <tr><td style="padding:5px 20px;"><strong>Back or side window sets:</strong> <?= booking.backSets ?></td></tr>
+                  <tr><td style="padding:5px 20px 20px;"><strong>Extras:</strong> <?= booking.extras ?></td></tr>
+                </table>
+              </td>
+            </tr>
+            <tr>
+              <td style="padding:8px 28px 28px;font-size:15px;line-height:1.65;">
+                <h2 style="margin:0 0 10px;color:#07575b;font-size:19px;letter-spacing:0;">A few useful details</h2>
+                <p style="margin:0 0 12px;">The selected time is an estimated arrival window. We may be visiting other customers during the same period, but we will aim to arrive within it.</p>
+                <p style="margin:0 0 12px;">The price shown is an estimate based on the information provided. We will check and confirm it before starting your first clean. There is nothing to pay until the clean has been completed.</p>
+                <p style="margin:0;">To change your booking, reply to this email, call <a href="tel:+447598629684" style="color:#07575b;font-weight:700;">07598 629684</a>, or <a href="https://wa.me/447598629684" style="color:#07575b;font-weight:700;">message us on WhatsApp</a>.</p>
+              </td>
+            </tr>
+            <tr>
+              <td style="padding:22px 28px;background:#f6f9f8;border-top:1px solid #dbe6e2;font-size:14px;line-height:1.6;color:#455650;">
+                <strong style="color:#172521;">Ben<br>B D Window Cleaning Services</strong><br>
+                Southampton area<br>
+                <a href="tel:+447598629684" style="color:#07575b;">07598 629684</a> &nbsp;|&nbsp;
+                <a href="mailto:bdwindowservices@gmail.com" style="color:#07575b;">bdwindowservices@gmail.com</a>
+              </td>
+            </tr>
+          </table>
+        </td>
+      </tr>
+    </table>
+  </body>
+</html>
