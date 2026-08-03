@@ -354,6 +354,34 @@
         background: transparent;
       }
     }
+
+    .booking-summary-overlay.is-submitting .booking-summary-close,
+    .booking-summary-overlay.is-submitting .booking-summary-back,
+    .booking-summary-overlay.is-submitting .booking-summary-edit {
+      visibility: hidden;
+      pointer-events: none;
+    }
+
+    .booking-summary-overlay.is-submitting .booking-summary-send {
+      cursor: wait;
+    }
+
+    .booking-summary-overlay.is-submitting .booking-summary-send::before {
+      display: inline-block;
+      width: 14px;
+      height: 14px;
+      margin-right: 9px;
+      border: 2px solid rgba(255,255,255,0.55);
+      border-top-color: #ffffff;
+      border-radius: 50%;
+      vertical-align: -2px;
+      animation: booking-summary-spin 0.8s linear infinite;
+      content: "";
+    }
+
+    @keyframes booking-summary-spin {
+      to { transform: rotate(360deg); }
+    }
   `;
   document.head.append(style);
 
@@ -433,6 +461,9 @@
   const closeButton = overlay.querySelector(".booking-summary-close");
   const backButton = overlay.querySelector(".booking-summary-back");
   const sendButton = overlay.querySelector(".booking-summary-send");
+  const summaryTitle = overlay.querySelector("#booking-summary-title");
+  const summaryDescription = overlay.querySelector("#booking-summary-description");
+  const editButtons = Array.from(overlay.querySelectorAll(".booking-summary-edit"));
   const summaryAppointment = overlay.querySelector("#summary-appointment");
   const summaryCleaningType = overlay.querySelector("#summary-cleaning-type");
   const summaryCoverage = overlay.querySelector("#summary-coverage");
@@ -449,6 +480,23 @@
   const summaryMonthly = overlay.querySelector("#summary-monthly");
 
   let previousFocus = null;
+  let submissionInProgress = false;
+
+  const setSubmissionState = (active, message = "") => {
+    submissionInProgress = active;
+    overlay.classList.toggle("is-submitting", active);
+    closeButton.disabled = active;
+    backButton.disabled = active;
+    editButtons.forEach((button) => {
+      button.disabled = active;
+    });
+    sendButton.disabled = active;
+    sendButton.textContent = active ? "Confirming your booking..." : "Send booking request";
+    summaryTitle.textContent = active ? "Confirming your booking" : "Review your booking";
+    summaryDescription.textContent = message || (active
+      ? "Please keep this page open while we securely confirm your appointment."
+      : "Check everything below before sending your request.");
+  };
 
   const getSelectedBookingDate = () =>
     Array.from(bookingDateOptions).find((option) => option.checked);
@@ -620,7 +668,7 @@
   backButton.addEventListener("click", () => closeSummary());
 
   overlay.addEventListener("click", (event) => {
-    if (event.target === overlay) closeSummary();
+    if (event.target === overlay && !submissionInProgress) closeSummary();
   });
 
   overlay.querySelectorAll("[data-summary-edit]").forEach((button) => {
@@ -633,22 +681,42 @@
       return;
     }
 
-    closeSummary(false);
+    setSubmissionState(true);
     if (typeof quoteForm.requestSubmit === "function") {
       quoteForm.requestSubmit();
     } else {
-      quoteForm.submit();
+      const submitEvent = new Event("submit", { bubbles: true, cancelable: true });
+      if (quoteForm.dispatchEvent(submitEvent)) {
+        quoteForm.submit();
+      }
     }
   });
 
   quoteForm.addEventListener("submit", (event) => {
-    if (event.defaultPrevented) return;
-    sendButton.disabled = true;
-    sendButton.textContent = "Sending booking request...";
+    if (event.defaultPrevented) {
+      setSubmissionState(false, "Please review the highlighted booking details and try again.");
+      return;
+    }
+    setSubmissionState(true);
+  });
+
+  document.addEventListener("booking:slow", (event) => {
+    setSubmissionState(true, event.detail?.message || "Google is taking longer than usual. Please keep this page open.");
+  });
+
+  document.addEventListener("booking:failed", (event) => {
+    setSubmissionState(false, event.detail?.message || "We could not confirm the booking. Please try again.");
+    dialog.focus({ preventScroll: true });
+  });
+
+  document.addEventListener("booking:confirmed", () => {
+    setSubmissionState(false);
+    closeSummary(false);
   });
 
   overlay.addEventListener("keydown", (event) => {
     if (event.key === "Escape") {
+      if (submissionInProgress) return;
       event.preventDefault();
       closeSummary();
       return;
