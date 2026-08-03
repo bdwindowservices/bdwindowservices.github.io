@@ -334,7 +334,7 @@
 
   if (!document.querySelector('script[data-booking-summary-script]')) {
     const bookingSummaryScript = document.createElement("script");
-    bookingSummaryScript.src = "booking-summary.js?v=20260802-2";
+    bookingSummaryScript.src = "booking-summary.js?v=20260803-3";
     bookingSummaryScript.dataset.bookingSummaryScript = "true";
     document.body.append(bookingSummaryScript);
   }
