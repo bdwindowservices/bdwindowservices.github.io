@@ -708,33 +708,6 @@ window.addEventListener("message", (event) => {
   }
 });
 
-if (bookingResponse) {
-  bookingResponse.addEventListener("load", () => {
-    if (!bookingSubmissionPending || bookingConfirmationShown) {
-      return;
-    }
-
-    if (bookingResponseTimeout) {
-      window.clearTimeout(bookingResponseTimeout);
-    }
-    bookingResponseTimeout = window.setTimeout(() => {
-      if (!bookingSubmissionPending || bookingConfirmationShown) {
-        return;
-      }
-
-      bookingSubmissionPending = false;
-      bookingResponseTimeout = null;
-      if (bookCleanButton) {
-        bookCleanButton.disabled = false;
-        bookCleanButton.textContent = "Confirm booking";
-      }
-      if (formStatus) {
-        formStatus.textContent = "We could not verify that your booking was completed. Please try again or contact us directly.";
-      }
-    }, 4000);
-  });
-}
-
 if (quoteForm) {
   quoteForm.addEventListener("submit", (event) => {
     if (!validateQuoteDetails()) {
@@ -758,8 +731,22 @@ if (quoteForm) {
     bookingSubmissionPending = true;
     if (bookingResponseTimeout) {
       window.clearTimeout(bookingResponseTimeout);
-      bookingResponseTimeout = null;
     }
+    bookingResponseTimeout = window.setTimeout(() => {
+      if (!bookingSubmissionPending || bookingConfirmationShown) {
+        return;
+      }
+
+      bookingSubmissionPending = false;
+      bookingResponseTimeout = null;
+      if (bookCleanButton) {
+        bookCleanButton.disabled = false;
+        bookCleanButton.textContent = "Confirm booking";
+      }
+      if (formStatus) {
+        formStatus.textContent = "The booking service did not respond. Please try again or contact us directly.";
+      }
+    }, 30000);
 
     if (bookCleanButton) {
       bookCleanButton.disabled = true;
