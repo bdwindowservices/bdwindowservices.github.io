@@ -110,8 +110,8 @@
 
     if (confirmation) {
       confirmation.innerHTML = `
-        <strong>Thank you, your appointment request has been sent successfully.</strong>
-        <span>We will email you confirmation of your booked appointment. For any changes to your appointment or anything urgent please email us on <a href="mailto:bdwindowservices@gmail.com">bdwindowservices@gmail.com</a>.</span>
+        <strong>Thank you, your booking is confirmed.</strong>
+        <span>We have emailed your booking details. For any changes to your appointment or anything urgent please email us on <a href="mailto:bdwindowservices@gmail.com">bdwindowservices@gmail.com</a>.</span>
       `;
 
       const positionMobileConfirmation = () => {
