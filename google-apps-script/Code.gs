@@ -22,7 +22,8 @@ const BOOKING_HEADERS = [
   "Back or side window sets",
   "Front only clean",
   "Extras",
-  "Access notes"
+  "Access notes",
+  "Mobile number"
 ];
 
 function setupBookingService() {
@@ -92,6 +93,7 @@ function bookingFrom_(submitted) {
     name: clean_(submitted.Name),
     firstName: clean_(submitted.Name).split(/\s+/)[0],
     email: clean_(submitted.email || submitted["Email address"]),
+    mobile: clean_(submitted["Mobile number"]),
     addressLine1: addressLine1,
     addressLine2: addressLine2,
     postcode: postcode,
@@ -110,6 +112,7 @@ function validateBooking_(booking) {
   const required = [
     [booking.name, "name"],
     [booking.email, "email address"],
+    [booking.mobile, "mobile number"],
     [booking.addressLine1, "address"],
     [booking.postcode, "postcode"],
     [booking.appointment, "appointment"],
@@ -152,7 +155,8 @@ function appendBooking_(booking) {
     booking.backSets,
     booking.frontOnly,
     booking.extras,
-    booking.accessNotes
+    booking.accessNotes,
+    booking.mobile
   ].map(sheetSafe_);
 
   sheet.getRange(row, 1, 1, values.length).setValues([values]);
@@ -170,13 +174,15 @@ function getOrCreateBookingSheet_(spreadsheet) {
 
   if (sheet.getLastRow() === 0) {
     sheet.appendRow(BOOKING_HEADERS);
-    sheet.getRange(1, 1, 1, BOOKING_HEADERS.length)
-      .setFontWeight("bold")
-      .setBackground("#07575b")
-      .setFontColor("#ffffff");
-    sheet.setFrozenRows(1);
-    sheet.autoResizeColumns(1, BOOKING_HEADERS.length);
+  } else {
+    sheet.getRange(1, 1, 1, BOOKING_HEADERS.length).setValues([BOOKING_HEADERS]);
   }
+  sheet.getRange(1, 1, 1, BOOKING_HEADERS.length)
+    .setFontWeight("bold")
+    .setBackground("#07575b")
+    .setFontColor("#ffffff");
+  sheet.setFrozenRows(1);
+  sheet.autoResizeColumns(1, BOOKING_HEADERS.length);
 
   return sheet;
 }
@@ -213,6 +219,7 @@ function sendBusinessNotification_(booking) {
     "Reference: " + booking.reference,
     "Customer: " + booking.name,
     "Email: " + booking.email,
+    "Mobile: " + booking.mobile,
     "Address: " + booking.address,
     "Appointment: " + booking.appointment,
     "Estimated quote: " + booking.estimate,
@@ -246,6 +253,7 @@ function customerPlainText_(booking) {
     "Reference: " + booking.reference,
     "Date and arrival window: " + booking.appointment,
     "Address: " + booking.address,
+    "Mobile: " + booking.mobile,
     "Estimated price: " + booking.estimate,
     "Front window sets: " + booking.frontSets,
     "Back or side window sets: " + booking.backSets,
