@@ -3,6 +3,7 @@ const CONFIG = Object.freeze({
   businessEmail: "bdwindowservices@gmail.com",
   businessPhone: "07598 629684",
   websiteUrl: "https://bdwindowservices.github.io/",
+  websiteSource: "bdwindowservices.github.io",
   sheetName: "Bookings",
   timezone: "Europe/London"
 });
@@ -23,7 +24,9 @@ const BOOKING_HEADERS = [
   "Front only clean",
   "Extras",
   "Access notes",
-  "Mobile number"
+  "Mobile number",
+  "Submission ID",
+  "Website source"
 ];
 
 function setupBookingService() {
@@ -59,11 +62,19 @@ function doPost(event) {
     validateBooking_(booking);
 
     const lock = LockService.getScriptLock();
+    let existingReference = "";
     lock.waitLock(10000);
     try {
-      storedBooking = appendBooking_(booking);
+      existingReference = findBookingReferenceBySubmissionId_(booking.submissionId);
+      if (!existingReference) {
+        storedBooking = appendBooking_(booking);
+      }
     } finally {
       lock.releaseLock();
+    }
+
+    if (existingReference) {
+      return successPage_(existingReference);
     }
 
     sendBusinessNotification_(booking);
@@ -94,6 +105,8 @@ function bookingFrom_(submitted) {
     firstName: clean_(submitted.Name).split(/\s+/)[0],
     email: clean_(submitted.email || submitted["Email address"]),
     mobile: clean_(submitted["Mobile number"]),
+    submissionId: clean_(submitted["Submission ID"]),
+    websiteSource: clean_(submitted["Website source"]),
     addressLine1: addressLine1,
     addressLine2: addressLine2,
     postcode: postcode,
@@ -113,6 +126,7 @@ function validateBooking_(booking) {
     [booking.name, "name"],
     [booking.email, "email address"],
     [booking.mobile, "mobile number"],
+    [booking.submissionId, "submission ID"],
     [booking.addressLine1, "address"],
     [booking.postcode, "postcode"],
     [booking.appointment, "appointment"],
@@ -129,6 +143,36 @@ function validateBooking_(booking) {
   if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(booking.email)) {
     throw new Error("Invalid customer email address");
   }
+  if (booking.websiteSource !== CONFIG.websiteSource) {
+    throw new Error("Booking rejected because it did not come from the current website");
+  }
+  if (!/^[a-zA-Z0-9-]{12,100}$/.test(booking.submissionId)) {
+    throw new Error("Invalid submission ID");
+  }
+}
+
+function findBookingReferenceBySubmissionId_(submissionId) {
+  const spreadsheetId = PropertiesService.getScriptProperties().getProperty("BOOKINGS_SPREADSHEET_ID");
+  if (!spreadsheetId) {
+    throw new Error("Booking service setup is incomplete. Run setupBookingService from the spreadsheet's Apps Script project.");
+  }
+
+  const spreadsheet = SpreadsheetApp.openById(spreadsheetId);
+  const sheet = getOrCreateBookingSheet_(spreadsheet);
+  const lastRow = sheet.getLastRow();
+  if (lastRow < 2) {
+    return "";
+  }
+
+  const submissionIdColumn = BOOKING_HEADERS.indexOf("Submission ID");
+  const referenceColumn = BOOKING_HEADERS.indexOf("Booking reference");
+  const rows = sheet.getRange(2, 1, lastRow - 1, BOOKING_HEADERS.length).getValues();
+  for (let index = rows.length - 1; index >= 0; index -= 1) {
+    if (String(rows[index][submissionIdColumn] || "") === submissionId) {
+      return String(rows[index][referenceColumn] || "");
+    }
+  }
+  return "";
 }
 
 function appendBooking_(booking) {
@@ -156,7 +200,9 @@ function appendBooking_(booking) {
     booking.frontOnly,
     booking.extras,
     booking.accessNotes,
-    booking.mobile
+    booking.mobile,
+    booking.submissionId,
+    booking.websiteSource
   ].map(sheetSafe_);
 
   sheet.getRange(row, 1, 1, values.length).setValues([values]);
