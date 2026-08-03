@@ -75,6 +75,10 @@ let bookingConfirmationShown = false;
 let bookingResponseTimeout = null;
 let bookingSlowNoticeTimeout = null;
 
+const dispatchBookingUiEvent = (name, message = "") => {
+  document.dispatchEvent(new CustomEvent(name, { detail: { message } }));
+};
+
 if (year) {
   year.textContent = new Date().getFullYear();
 }
@@ -112,6 +116,7 @@ const showBookingConfirmation = (reference) => {
 
   bookingConfirmationShown = true;
   bookingSubmissionPending = false;
+  dispatchBookingUiEvent("booking:confirmed", reference ? `Booking reference: ${reference}` : "");
   if (bookingResponseTimeout) {
     window.clearTimeout(bookingResponseTimeout);
     bookingResponseTimeout = null;
@@ -724,9 +729,11 @@ window.addEventListener("message", (event) => {
     bookCleanButton.disabled = false;
     bookCleanButton.textContent = "Confirm booking";
   }
+  const failureMessage = "We could not complete your booking. Please try again or contact us directly.";
   if (formStatus) {
-    formStatus.textContent = "We could not complete your booking. Please try again or contact us directly.";
+    formStatus.textContent = failureMessage;
   }
+  dispatchBookingUiEvent("booking:failed", failureMessage);
 });
 
 if (quoteForm) {
@@ -763,9 +770,11 @@ if (quoteForm) {
       if (bookCleanButton) {
         bookCleanButton.textContent = "Still confirming...";
       }
+      const slowMessage = "Google is taking longer than usual. Please keep this page open and do not submit the booking again.";
       if (formStatus) {
-        formStatus.textContent = "Google is taking longer than usual. Please keep this page open and do not submit the booking again.";
+        formStatus.textContent = slowMessage;
       }
+      dispatchBookingUiEvent("booking:slow", slowMessage);
     }, 15000);
     bookingResponseTimeout = window.setTimeout(() => {
       if (!bookingSubmissionPending || bookingConfirmationShown) {
@@ -779,9 +788,11 @@ if (quoteForm) {
         bookCleanButton.disabled = false;
         bookCleanButton.textContent = "Confirm booking";
       }
+      const timeoutMessage = "We could not verify the booking after four minutes. Check your email before trying again, or contact us directly.";
       if (formStatus) {
-        formStatus.textContent = "We could not verify the booking after four minutes. Check your email before trying again, or contact us directly.";
+        formStatus.textContent = timeoutMessage;
       }
+      dispatchBookingUiEvent("booking:failed", timeoutMessage);
     }, 240000);
 
     if (bookCleanButton) {
