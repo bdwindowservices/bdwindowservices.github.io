@@ -65,6 +65,24 @@ const quoteState = {
   extraPrice: 0,
   priceChanged: false
 };
+const qrQuotePresets = new Map([
+  ["front-only-1-2", { frontIndex: 0, backIndex: 0 }],
+  ["front-only-3-4", { frontIndex: 1, backIndex: 0 }],
+  ["front-only-5-6", { frontIndex: 2, backIndex: 0 }],
+  ["all-1-2", { frontIndex: 0, backIndex: 1 }],
+  ["all-3-4", { frontIndex: 1, backIndex: 2 }],
+  ["all-5-6", { frontIndex: 2, backIndex: 3 }]
+]);
+const qrQuotePreset = qrQuotePresets.get(params.get("package")) || null;
+
+if (qrQuotePreset) {
+  quoteState.frontIndex = qrQuotePreset.frontIndex;
+  quoteState.backIndex = qrQuotePreset.backIndex;
+  quoteState.frontOnly = false;
+  quoteState.extra = "";
+  quoteState.extraPrice = 0;
+  quoteState.priceChanged = true;
+}
 const formatCleaningDate = new Intl.DateTimeFormat("en-GB", {
   weekday: "long",
   day: "numeric",
@@ -809,3 +827,11 @@ updateBookingDateOptions();
 updateCounters();
 updateExtraButtons();
 updateQuoteTotal();
+
+if (qrQuotePreset && quoteTotal) {
+  window.requestAnimationFrame(() => {
+    window.requestAnimationFrame(() => {
+      quoteTotal.scrollIntoView({ block: "center" });
+    });
+  });
+}
