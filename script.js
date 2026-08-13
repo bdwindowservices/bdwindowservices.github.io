@@ -73,9 +73,13 @@ const qrQuotePresets = new Map([
   ["all-3-4", { frontIndex: 1, backIndex: 2 }],
   ["all-5-6", { frontIndex: 2, backIndex: 3 }]
 ]);
-const qrQuotePreset = qrQuotePresets.get(params.get("package")) || null;
+const qrQuotePackage = params.get("package");
+const qrQuotePreset = qrQuotePresets.get(qrQuotePackage) || null;
 
 if (qrQuotePreset) {
+  if ("scrollRestoration" in window.history) {
+    window.history.scrollRestoration = "manual";
+  }
   quoteState.frontIndex = qrQuotePreset.frontIndex;
   quoteState.backIndex = qrQuotePreset.backIndex;
   quoteState.frontOnly = false;
@@ -859,6 +863,14 @@ if (qrQuotePreset && quoteTotal) {
         return;
       }
       qrPositioningStarted = true;
+
+      if (qrQuotePackage === "front-only-3-4") {
+        const cleanQrUrl = `${window.location.pathname}${window.location.search}`;
+        window.location.replace("#quote-total");
+        window.setTimeout(() => {
+          window.history.replaceState(window.history.state, "", cleanQrUrl);
+        }, 400);
+      }
 
       retryDelays.forEach((delay) => {
         window.setTimeout(() => {
