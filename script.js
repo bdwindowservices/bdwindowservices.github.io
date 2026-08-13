@@ -865,8 +865,13 @@ if (qrQuotePreset && quoteTotal) {
       window.addEventListener("load", reinforceQrPosition, { once: true });
     }
   } else {
+    const quoteSection = document.querySelector("#quote");
     window.requestAnimationFrame(() => {
-      window.requestAnimationFrame(positionQrQuote);
+      window.requestAnimationFrame(() => {
+        if (quoteSection) {
+          quoteSection.scrollIntoView({ block: "start", behavior: "auto" });
+        }
+      });
     });
   }
 }
