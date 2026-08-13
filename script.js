@@ -843,58 +843,26 @@ if (qrQuotePreset && quoteTotal) {
   };
 
   if (window.matchMedia("(max-width: 640px), (pointer: coarse)").matches) {
-    let qrPositioningCancelled = false;
-    let qrPositioningStarted = false;
-    const retryDelays = [0, 250, 750, 1500];
+    const cleanQrUrl = `${window.location.pathname}${window.location.search}`;
+    const retryDelays = [0, 200, 500, 900, 1500, 2400];
 
-    const cancelQrPositioning = () => {
-      qrPositioningCancelled = true;
-    };
-
-    ["touchstart", "pointerdown", "wheel", "keydown"].forEach((eventName) => {
-      window.addEventListener(eventName, cancelQrPositioning, {
-        once: true,
-        passive: true
-      });
-    });
-
-    const scheduleQrPositioning = () => {
-      if (qrPositioningStarted) {
-        return;
-      }
-      qrPositioningStarted = true;
-
-      if (qrQuotePackage === "front-only-3-4") {
-        const cleanQrUrl = `${window.location.pathname}${window.location.search}`;
-        window.location.replace("#quote-total");
-        window.setTimeout(() => {
-          window.history.replaceState(window.history.state, "", cleanQrUrl);
-        }, 400);
-      }
-
+    const reinforceQrPosition = () => {
       retryDelays.forEach((delay) => {
         window.setTimeout(() => {
-          if (qrPositioningCancelled) {
-            return;
-          }
           window.requestAnimationFrame(positionQrQuote);
         }, delay);
       });
+
+      window.setTimeout(() => {
+        window.history.replaceState(window.history.state, "", cleanQrUrl);
+      }, retryDelays[retryDelays.length - 1] + 100);
     };
 
-    const positionQrQuoteAfterLoad = () => {
-      if (document.fonts && document.fonts.ready) {
-        document.fonts.ready.then(scheduleQrPositioning, scheduleQrPositioning);
-        return;
-      }
-      scheduleQrPositioning();
-    };
-
-    window.addEventListener("pageshow", positionQrQuoteAfterLoad, { once: true });
+    window.addEventListener("pageshow", reinforceQrPosition, { once: true });
     if (document.readyState === "complete") {
-      positionQrQuoteAfterLoad();
+      reinforceQrPosition();
     } else {
-      window.addEventListener("load", positionQrQuoteAfterLoad, { once: true });
+      window.addEventListener("load", reinforceQrPosition, { once: true });
     }
   } else {
     window.requestAnimationFrame(() => {
