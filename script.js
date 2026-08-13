@@ -829,9 +829,29 @@ updateExtraButtons();
 updateQuoteTotal();
 
 if (qrQuotePreset && quoteTotal) {
-  window.requestAnimationFrame(() => {
+  const positionQrQuote = () => {
     window.requestAnimationFrame(() => {
-      quoteTotal.scrollIntoView({ block: "center" });
+      window.requestAnimationFrame(() => {
+        quoteTotal.scrollIntoView({ block: "center" });
+      });
     });
-  });
+  };
+
+  if (window.matchMedia("(max-width: 640px)").matches) {
+    const positionQrQuoteAfterLoad = () => {
+      if (document.fonts && document.fonts.ready) {
+        document.fonts.ready.then(positionQrQuote, positionQrQuote);
+        return;
+      }
+      positionQrQuote();
+    };
+
+    if (document.readyState === "complete") {
+      positionQrQuoteAfterLoad();
+    } else {
+      window.addEventListener("load", positionQrQuoteAfterLoad, { once: true });
+    }
+  } else {
+    positionQrQuote();
+  }
 }
