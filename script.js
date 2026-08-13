@@ -830,28 +830,63 @@ updateQuoteTotal();
 
 if (qrQuotePreset && quoteTotal) {
   const positionQrQuote = () => {
-    window.requestAnimationFrame(() => {
-      window.requestAnimationFrame(() => {
-        quoteTotal.scrollIntoView({ block: "center" });
-      });
-    });
+    const rect = quoteTotal.getBoundingClientRect();
+    const targetTop = Math.max(
+      0,
+      window.scrollY + rect.top - Math.max(16, (window.innerHeight - rect.height) / 2)
+    );
+    window.scrollTo({ top: targetTop, left: 0, behavior: "auto" });
   };
 
-  if (window.matchMedia("(max-width: 640px)").matches) {
-    const positionQrQuoteAfterLoad = () => {
-      if (document.fonts && document.fonts.ready) {
-        document.fonts.ready.then(positionQrQuote, positionQrQuote);
-        return;
-      }
-      positionQrQuote();
+  if (window.matchMedia("(max-width: 640px), (pointer: coarse)").matches) {
+    let qrPositioningCancelled = false;
+    let qrPositioningStarted = false;
+    const retryDelays = [0, 250, 750, 1500];
+
+    const cancelQrPositioning = () => {
+      qrPositioningCancelled = true;
     };
 
+    ["touchstart", "pointerdown", "wheel", "keydown"].forEach((eventName) => {
+      window.addEventListener(eventName, cancelQrPositioning, {
+        once: true,
+        passive: true
+      });
+    });
+
+    const scheduleQrPositioning = () => {
+      if (qrPositioningStarted) {
+        return;
+      }
+      qrPositioningStarted = true;
+
+      retryDelays.forEach((delay) => {
+        window.setTimeout(() => {
+          if (qrPositioningCancelled) {
+            return;
+          }
+          window.requestAnimationFrame(positionQrQuote);
+        }, delay);
+      });
+    };
+
+    const positionQrQuoteAfterLoad = () => {
+      if (document.fonts && document.fonts.ready) {
+        document.fonts.ready.then(scheduleQrPositioning, scheduleQrPositioning);
+        return;
+      }
+      scheduleQrPositioning();
+    };
+
+    window.addEventListener("pageshow", positionQrQuoteAfterLoad, { once: true });
     if (document.readyState === "complete") {
       positionQrQuoteAfterLoad();
     } else {
       window.addEventListener("load", positionQrQuoteAfterLoad, { once: true });
     }
   } else {
-    positionQrQuote();
+    window.requestAnimationFrame(() => {
+      window.requestAnimationFrame(positionQrQuote);
+    });
   }
 }
