@@ -6,7 +6,7 @@
     "7 to 8": "Front example: 7 window sets."
   };
 
-  const oneOffSurcharge = 5;
+  const oneOffSurcharge = 8;
   let oneOffActive = false;
 
   const style = document.createElement("style");
@@ -196,7 +196,7 @@
     if (!hiddenInput) return;
 
     hiddenInput.name = "One-off clean";
-    hiddenInput.value = checked ? "Yes - £5 added" : "No";
+    hiddenInput.value = checked ? "Yes - £8 added" : "No";
   };
 
   const updateOneOffOptionCopy = () => {
@@ -204,15 +204,15 @@
     const label = checkbox?.closest("label");
     if (!checkbox || !label) return;
 
-    checkbox.setAttribute("aria-label", "One-off clean, £5 extra");
+    checkbox.setAttribute("aria-label", "One-off clean, £8 extra");
     const textNode = Array.from(label.childNodes).find(
       (node) => node.nodeType === Node.TEXT_NODE
     );
 
     if (textNode) {
-      textNode.textContent = "One-off clean £5+";
+      textNode.textContent = "One-off clean £8+";
     } else {
-      label.append("One-off clean £5+");
+      label.append("One-off clean £8+");
     }
 
     updateOneOffFormField(checkbox.checked);
@@ -280,7 +280,7 @@
     monthly.hidden = true;
     monthly.textContent = "";
     if (estimated) {
-      estimated.value = `${singlePrice} One-off Clean (includes £5 one-off clean charge)`;
+      estimated.value = `${singlePrice} One-off Clean (includes £8 one-off clean charge)`;
     }
     updateOneOffActionBars(displayText, false);
   };
