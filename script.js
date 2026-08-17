@@ -42,6 +42,7 @@ const mobileQuoteDefaultText = mobileQuoteAmount ? mobileQuoteAmount.textContent
 const desktopEstimateDefaultMain = desktopEstimateMain ? desktopEstimateMain.textContent : "";
 const desktopEstimateDefaultSub = desktopEstimateSub ? desktopEstimateSub.textContent : "";
 const desktopEstimateDefaultCta = desktopEstimateCta ? desktopEstimateCta.textContent : "";
+const ONE_OFF_CLEAN_PRICE = 8;
 const frontOptions = [
   { label: "1 to 2", emailLabel: "1 to 2 sets", previewSets: 2, price: 12 },
   { label: "3 to 4", emailLabel: "3 to 4 sets", previewSets: 3, price: 15 },
@@ -534,7 +535,8 @@ const updateQuoteTotal = () => {
   }
 
   const backSideExtra = quoteState.frontOnly ? 0 : backOption.price;
-  const totalPrice = frontOption.price + backSideExtra + quoteState.extraPrice;
+  const oneOffExtra = quoteState.frontOnly ? ONE_OFF_CLEAN_PRICE : 0;
+  const totalPrice = frontOption.price + backSideExtra + quoteState.extraPrice + oneOffExtra;
   const monthlyPrice = totalPrice * 2 / 3;
   const price = formatMoney(totalPrice);
   const monthly = formatMoney(monthlyPrice);
